@@ -34,22 +34,41 @@ export async function SectionCards() {
     .order("Date", { ascending: false })
     .limit(1);
 
+  const { data: goldSummaryData, error: goldSummaryError } = await supabase
+    .from("Daily Precious Metals - Holdings Summary")
+    .select("*")
+    .eq("Metal", "Gold")
+    .order("Date", { ascending: false })
+    .limit(1);
+
+  const { data: silverSummaryData, error: silverSummaryError } = await supabase
+    .from("Daily Precious Metals - Holdings Summary")
+    .select("*")
+    .eq("Metal", "Silver")
+    .order("Date", { ascending: false })
+    .limit(1);
+
   // Calculate Total Portfolio Values
   const totalInvestment =
     (stocksSummaryData?.[0]?.["Total Investment"] || 0) +
     (mutualFundsSummaryData?.[0]?.["Total Investment"] || 0) +
-    (ppfSummaryData?.[0]?.["Total Investment"] || 0);
+    (ppfSummaryData?.[0]?.["Total Investment"] || 0) +
+    (goldSummaryData?.[0]?.["Total Investment"] || 0) +
+    (silverSummaryData?.[0]?.["Total Investment"] || 0);
 
   const totalCurrentValue =
     (stocksSummaryData?.[0]?.["Current Value"] || 0) +
     (mutualFundsSummaryData?.[0]?.["Current Value"] || 0) +
-    (ppfSummaryData?.[0]?.["Current Value"] || 0);
+    (ppfSummaryData?.[0]?.["Current Value"] || 0) +
+    (goldSummaryData?.[0]?.["Current Value"] || 0) +
+    (silverSummaryData?.[0]?.["Current Value"] || 0);
 
   const totalGainLoss = totalCurrentValue - totalInvestment;
   const totalGainLossPercentage = (totalGainLoss / totalInvestment) * 100;
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
+
       <Card className="@container/card">
         <CardHeader>
           <CardDescription>Total Portfolio</CardDescription>
@@ -72,6 +91,7 @@ export async function SectionCards() {
           </div>
         </CardFooter>
       </Card>
+
       <Card className="@container/card">
         <CardHeader>
           <CardDescription>Stocks</CardDescription>
@@ -94,6 +114,7 @@ export async function SectionCards() {
           </div>
         </CardFooter>
       </Card>
+
       <Card className="@container/card">
         <CardHeader>
           <CardDescription>Mutual Funds</CardDescription>
@@ -116,9 +137,10 @@ export async function SectionCards() {
           </div>
         </CardFooter>
       </Card>
+
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>PPF</CardDescription>
+          <CardDescription>Public Provident Fund</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             ₹{ppfSummaryData?.[0]?.["Current Value"]?.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </CardTitle>
@@ -138,6 +160,53 @@ export async function SectionCards() {
           </div>
         </CardFooter>
       </Card>
+
+      <Card className="@container/card">
+        <CardHeader>
+          <CardDescription>Gold</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            ₹{goldSummaryData?.[0]?.["Current Value"]?.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline">
+              {((goldSummaryData?.[0]?.["Current Value"] || 0) - (goldSummaryData?.[0]?.["Total Investment"] || 0)) >= 0 ? <IconTrendingUp /> : <IconTrendingDown />}
+              {((goldSummaryData?.[0]?.["Current Value"] || 0) - (goldSummaryData?.[0]?.["Total Investment"] || 0)) >= 0 ? '+' : '-'}{(((goldSummaryData?.[0]?.["Current Value"] || 0) - (goldSummaryData?.[0]?.["Total Investment"] || 0)) / (goldSummaryData?.[0]?.["Total Investment"] || 1) * 100).toFixed(2)}%
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1.5 text-sm">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            Investment : ₹{goldSummaryData?.[0]?.["Total Investment"]?.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          <div className="text-muted-foreground">
+            Last updated : {goldSummaryData?.[0]?.["Date"]}
+          </div>
+        </CardFooter>
+      </Card>
+
+      <Card className="@container/card">
+        <CardHeader>
+          <CardDescription>Silver</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            ₹{silverSummaryData?.[0]?.["Current Value"]?.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline">
+              {((silverSummaryData?.[0]?.["Current Value"] || 0) - (silverSummaryData?.[0]?.["Total Investment"] || 0)) >= 0 ? <IconTrendingUp /> : <IconTrendingDown />}
+              {((silverSummaryData?.[0]?.["Current Value"] || 0) - (silverSummaryData?.[0]?.["Total Investment"] || 0)) >= 0 ? '+' : '-'}{(((silverSummaryData?.[0]?.["Current Value"] || 0) - (silverSummaryData?.[0]?.["Total Investment"] || 0)) / (silverSummaryData?.[0]?.["Total Investment"] || 1) * 100).toFixed(2)}%
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1.5 text-sm">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            Investment : ₹{silverSummaryData?.[0]?.["Total Investment"]?.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          <div className="text-muted-foreground">
+            Last updated : {silverSummaryData?.[0]?.["Date"]}
+          </div>
+        </CardFooter>
+      </Card>
+
     </div>
   )
 }
