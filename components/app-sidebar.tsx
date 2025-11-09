@@ -16,7 +16,7 @@ import {
   IconFileWord,
   IconFolder,
   IconHelp,
-  IconInnerShadowTop,
+  IconChartDonut,
   IconListDetails,
   IconReport,
   IconSearch,
@@ -177,7 +177,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
+                <IconChartDonut className="!size-5" />
                 <span className="text-base font-semibold">Stonks</span>
               </a>
             </SidebarMenuButton>
