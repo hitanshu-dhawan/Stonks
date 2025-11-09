@@ -34,27 +34,41 @@ export async function SectionCards() {
     .order("Date", { ascending: false })
     .limit(1);
 
+  // Calculate Total Portfolio Values
+  const totalInvestment =
+    (stocksSummaryData?.[0]?.["Total Investment"] || 0) +
+    (mutualFundsSummaryData?.[0]?.["Total Investment"] || 0) +
+    (ppfSummaryData?.[0]?.["Total Investment"] || 0);
+
+  const totalCurrentValue =
+    (stocksSummaryData?.[0]?.["Current Value"] || 0) +
+    (mutualFundsSummaryData?.[0]?.["Current Value"] || 0) +
+    (ppfSummaryData?.[0]?.["Current Value"] || 0);
+
+  const totalGainLoss = totalCurrentValue - totalInvestment;
+  const totalGainLossPercentage = (totalGainLoss / totalInvestment) * 100;
+
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
+          <CardDescription>Total Portfolio</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
+            ₹{totalCurrentValue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
+              {totalGainLoss >= 0 ? <IconTrendingUp /> : <IconTrendingDown />}
+              {totalGainLoss >= 0 ? '+' : '-'}{Math.abs(totalGainLossPercentage).toFixed(2)}%
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
+            Investment : ₹{totalInvestment.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
           <div className="text-muted-foreground">
-            Visitors for the last 6 months
+            Combined portfolio across all categories
           </div>
         </CardFooter>
       </Card>
