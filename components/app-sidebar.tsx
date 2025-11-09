@@ -1,6 +1,11 @@
 "use client"
 
-import * as React from "react"
+// React hooks for state and lifecycle management
+import { useState, useEffect, useCallback } from 'react';
+
+import { createClient } from "@/lib/supabase/client";
+import { JwtPayload } from "@supabase/supabase-js";
+
 import {
   IconCamera,
   IconChartBar,
@@ -34,11 +39,6 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -151,6 +151,22 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  const supabase = createClient();
+
+  const [user, setUser] = useState<JwtPayload | undefined>(undefined);
+
+  // Fetch user on component mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      // You can also use getUser() which will be slower.
+      const { data } = await supabase.auth.getClaims();
+      setUser(data?.claims);
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -174,7 +190,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {user && <NavUser user={{ name: 'Hitanshu Dhawan', email: user.email || '', avatar: 'https://avatars.githubusercontent.com/u/22273871' }} />}
       </SidebarFooter>
     </Sidebar>
   )
