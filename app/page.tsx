@@ -11,8 +11,10 @@ export default function Home() {
             <div className="flex gap-5 items-center font-semibold">
               <Link href={"/"}>Stonks</Link>
             </div>
-            <ThemeSwitcher />
-            <AuthButton />
+            <div className="flex gap-5 items-center font-semibold">
+              <AuthButton />
+              <ThemeSwitcher />
+            </div>
           </div>
         </nav>
       </div>
