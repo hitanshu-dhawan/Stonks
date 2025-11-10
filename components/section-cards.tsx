@@ -16,6 +16,12 @@ export async function SectionCards() {
 
   const supabase = await createClient();
 
+  const { data: totalPortfolioSummaryData, error: totalPortfolioSummaryError } = await supabase
+    .from("Daily Total Portfolio Summary")
+    .select("*")
+    .order("Date", { ascending: false })
+    .limit(1);
+
   const { data: stocksSummaryData, error: stocksSummaryError } = await supabase
     .from("Daily Stocks - Holdings Summary")
     .select("*")
@@ -48,24 +54,6 @@ export async function SectionCards() {
     .order("Date", { ascending: false })
     .limit(1);
 
-  // Calculate Total Portfolio Values
-  const totalInvestment =
-    (stocksSummaryData?.[0]?.["Total Investment"] || 0) +
-    (mutualFundsSummaryData?.[0]?.["Total Investment"] || 0) +
-    (ppfSummaryData?.[0]?.["Total Investment"] || 0) +
-    (goldSummaryData?.[0]?.["Total Investment"] || 0) +
-    (silverSummaryData?.[0]?.["Total Investment"] || 0);
-
-  const totalCurrentValue =
-    (stocksSummaryData?.[0]?.["Current Value"] || 0) +
-    (mutualFundsSummaryData?.[0]?.["Current Value"] || 0) +
-    (ppfSummaryData?.[0]?.["Current Value"] || 0) +
-    (goldSummaryData?.[0]?.["Current Value"] || 0) +
-    (silverSummaryData?.[0]?.["Current Value"] || 0);
-
-  const totalGainLoss = totalCurrentValue - totalInvestment;
-  const totalGainLossPercentage = (totalGainLoss / totalInvestment) * 100;
-
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
 
@@ -73,18 +61,18 @@ export async function SectionCards() {
         <CardHeader>
           <CardDescription>Total Portfolio</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            ₹{totalCurrentValue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ₹{totalPortfolioSummaryData?.[0]?.["Current Value"]?.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              {totalGainLoss >= 0 ? <IconTrendingUp /> : <IconTrendingDown />}
-              {totalGainLoss >= 0 ? '+' : '-'}{Math.abs(totalGainLossPercentage).toFixed(2)}%
+              {((totalPortfolioSummaryData?.[0]?.["Current Value"] || 0) - (totalPortfolioSummaryData?.[0]?.["Total Investment"] || 0)) >= 0 ? <IconTrendingUp /> : <IconTrendingDown />}
+              {((totalPortfolioSummaryData?.[0]?.["Current Value"] || 0) - (totalPortfolioSummaryData?.[0]?.["Total Investment"] || 0)) >= 0 ? '+' : '-'}{(((totalPortfolioSummaryData?.[0]?.["Current Value"] || 0) - (totalPortfolioSummaryData?.[0]?.["Total Investment"] || 0)) / (totalPortfolioSummaryData?.[0]?.["Total Investment"] || 1) * 100).toFixed(2)}%
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Investment : ₹{totalInvestment.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            Investment : ₹{totalPortfolioSummaryData?.[0]?.["Total Investment"]?.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
           <div className="text-muted-foreground">
             Combined portfolio across all categories
