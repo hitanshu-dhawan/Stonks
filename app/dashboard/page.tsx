@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar"
-import { TotalPortfolioChartArea } from "@/components/total-portfolio-chart-area"
+import { TotalPortfolioAreaChart } from "@/components/total-portfolio-area-chart"
+import { TotalPortfolioPieChart } from "@/components/total-portfolio-pie-chart"
 import { DataTable } from "@/components/data-table"
 import { PortfolioSectionCards } from "@/components/portfolio-section-cards"
 import { SiteHeader } from "@/components/site-header"
@@ -39,7 +40,10 @@ export default async function Page() {
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <PortfolioSectionCards />
               <div className="px-4 lg:px-6">
-                <TotalPortfolioChartArea />
+                <TotalPortfolioAreaChart />
+              </div>
+              <div className="px-4 lg:px-6">
+                <TotalPortfolioPieChart />
               </div>
               <DataTable data={tableData} />
             </div>
