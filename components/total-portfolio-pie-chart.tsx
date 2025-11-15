@@ -149,7 +149,13 @@ export function TotalPortfolioPieChart() {
                 cursor={false}
                 content={(props) => <CustomTooltip {...props} totalValue={totalCurrentValue} />}
               />
-              <Pie data={totalPortfolioSummary} dataKey="Current Value" nameKey="instrument" />
+              <Pie
+                data={totalPortfolioSummary}
+                dataKey="Current Value"
+                nameKey="instrument"
+                startAngle={90}
+                endAngle={-270}
+              />
               <ChartLegend
                 content={<ChartLegendContent nameKey="instrument" />}
                 className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
