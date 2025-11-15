@@ -32,7 +32,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartAreaInteractive() {
+export function TotalPortfolioChartArea() {
 
   const supabase = createClient();
 

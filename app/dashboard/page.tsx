@@ -3,9 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
+import { TotalPortfolioChartArea } from "@/components/total-portfolio-chart-area"
 import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
+import { PortfolioSectionCards } from "@/components/portfolio-section-cards"
 import { SiteHeader } from "@/components/site-header"
 import {
   SidebarInset,
@@ -37,9 +37,9 @@ export default async function Page() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <SectionCards />
+              <PortfolioSectionCards />
               <div className="px-4 lg:px-6">
-                <ChartAreaInteractive />
+                <TotalPortfolioChartArea />
               </div>
               <DataTable data={tableData} />
             </div>

@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 
 import { PortfolioCard } from "@/components/portfolio-card"
 
-export async function SectionCards() {
+export async function PortfolioSectionCards() {
 
   const supabase = await createClient();
 
