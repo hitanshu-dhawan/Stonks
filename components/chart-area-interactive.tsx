@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { createClient } from "@/lib/supabase/client"
 
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
   Card,
@@ -107,6 +107,16 @@ export function ChartAreaInteractive() {
                     month: "short",
                     day: "numeric",
                   })
+                }}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => {
+                  if (value === 0) return '';
+                  const lakhs = value / 100000;
+                  return `₹${lakhs.toFixed(0)}L`;
                 }}
               />
               <ChartTooltip
