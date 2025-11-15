@@ -24,6 +24,18 @@ export default async function Page({
     redirect("/auth/login");
   }
 
+  const { data: stocksNamesData, error: stocksNamesError } = await supabase
+    .from("Stocks - Names")
+    .select("*")
+    .eq("Instrument", instrument)
+    .limit(1);
+
+  const stockName = stocksNamesData && stocksNamesData.length > 0 ? stocksNamesData[0].Name : null;
+
+  if (!stockName) {
+    redirect("/stocks");
+  }
+
   return (
     <SidebarProvider
       style={
@@ -35,12 +47,12 @@ export default async function Page({
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader title={`Stock : ${instrument}`} />
+        <SiteHeader title={`Stock : ${stockName}`} />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <div className="px-4 lg:px-6">
-                <StockInstrumentPriceAreaChart instrument={instrument} />
+                <StockInstrumentPriceAreaChart instrument={instrument} instrumentName={stockName} />
               </div>
             </div>
           </div>

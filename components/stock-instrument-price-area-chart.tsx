@@ -28,8 +28,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function StockInstrumentPriceAreaChart({ instrument }: { instrument: string }) {
-
+export function StockInstrumentPriceAreaChart({
+  instrument,
+  instrumentName,
+}: {
+  instrument: string
+  instrumentName: string
+}) {
   const supabase = createClient();
 
   const [stockInstrumentPrice, setStockInstrumentPrice] = React.useState<any[] | null>(null);
@@ -51,9 +56,9 @@ export function StockInstrumentPriceAreaChart({ instrument }: { instrument: stri
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>{instrument} Price</CardTitle>
+        <CardTitle>{instrumentName} Price</CardTitle>
         <CardDescription>
-          Historical {instrument} Price
+          Historical Price
         </CardDescription>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
