@@ -12,22 +12,23 @@ import {
 
 interface PortfolioCardProps {
   title: string
-  currentValue?: number
-  totalInvestment?: number
-  footerText: string
+  currentValue: number
+  totalInvestment: number
   date?: string
+  footerText?: string
 }
 
 export function PortfolioCard({
   title,
-  currentValue = 0,
-  totalInvestment = 0,
-  footerText,
+  currentValue,
+  totalInvestment,
   date,
+  footerText,
 }: PortfolioCardProps) {
+
   const gain = currentValue - totalInvestment
   const isPositive = gain >= 0
-  const percentage = ((gain / (totalInvestment || 1)) * 100).toFixed(2)
+  const percentage = ((gain / totalInvestment) * 100).toFixed(2)
 
   return (
     <Card className="@container/card">

@@ -47,52 +47,59 @@ export async function SectionCards() {
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
 
-      <PortfolioCard
-        title="Total Portfolio"
-        currentValue={totalPortfolioSummaryData?.[0]?.["Current Value"]}
-        totalInvestment={totalPortfolioSummaryData?.[0]?.["Total Investment"]}
-        footerText="Combined portfolio across all categories"
-      />
+      {totalPortfolioSummaryData?.[0] && (
+        <PortfolioCard
+          title="Total Portfolio"
+          currentValue={totalPortfolioSummaryData?.[0]?.["Current Value"]}
+          totalInvestment={totalPortfolioSummaryData?.[0]?.["Total Investment"]}
+          footerText="Combined portfolio across all categories"
+        />
+      )}
 
-      <PortfolioCard
-        title="Stocks"
-        currentValue={stocksSummaryData?.[0]?.["Current Value"]}
-        totalInvestment={stocksSummaryData?.[0]?.["Total Investment"]}
-        footerText=""
-        date={stocksSummaryData?.[0]?.["Date"]}
-      />
+      {stocksSummaryData?.[0] && (
+        <PortfolioCard
+          title="Stocks"
+          currentValue={stocksSummaryData?.[0]?.["Current Value"]}
+          totalInvestment={stocksSummaryData?.[0]?.["Total Investment"]}
+          date={stocksSummaryData?.[0]?.["Date"]}
+        />
+      )}
 
-      <PortfolioCard
-        title="Mutual Funds"
-        currentValue={mutualFundsSummaryData?.[0]?.["Current Value"]}
-        totalInvestment={mutualFundsSummaryData?.[0]?.["Total Investment"]}
-        footerText=""
-        date={mutualFundsSummaryData?.[0]?.["Date"]}
-      />
+      {mutualFundsSummaryData?.[0] && (
+        <PortfolioCard
+          title="Mutual Funds"
+          currentValue={mutualFundsSummaryData?.[0]?.["Current Value"]}
+          totalInvestment={mutualFundsSummaryData?.[0]?.["Total Investment"]}
+          date={mutualFundsSummaryData?.[0]?.["Date"]}
+        />
+      )}
 
-      <PortfolioCard
-        title="Public Provident Fund"
-        currentValue={ppfSummaryData?.[0]?.["Current Value"]}
-        totalInvestment={ppfSummaryData?.[0]?.["Total Investment"]}
-        footerText=""
-        date={ppfSummaryData?.[0]?.["Date"]}
-      />
+      {ppfSummaryData?.[0] && (
+        <PortfolioCard
+          title="Public Provident Fund"
+          currentValue={ppfSummaryData?.[0]?.["Current Value"]}
+          totalInvestment={ppfSummaryData?.[0]?.["Total Investment"]}
+          date={ppfSummaryData?.[0]?.["Date"]}
+        />
+      )}
 
-      <PortfolioCard
-        title="Gold"
-        currentValue={goldSummaryData?.[0]?.["Current Value"]}
-        totalInvestment={goldSummaryData?.[0]?.["Total Investment"]}
-        footerText=""
-        date={goldSummaryData?.[0]?.["Date"]}
-      />
+      {goldSummaryData?.[0] && (
+        <PortfolioCard
+          title="Gold"
+          currentValue={goldSummaryData?.[0]?.["Current Value"]}
+          totalInvestment={goldSummaryData?.[0]?.["Total Investment"]}
+          date={goldSummaryData?.[0]?.["Date"]}
+        />
+      )}
 
-      <PortfolioCard
-        title="Silver"
-        currentValue={silverSummaryData?.[0]?.["Current Value"]}
-        totalInvestment={silverSummaryData?.[0]?.["Total Investment"]}
-        footerText=""
-        date={silverSummaryData?.[0]?.["Date"]}
-      />
+      {silverSummaryData?.[0] && (
+        <PortfolioCard
+          title="Silver"
+          currentValue={silverSummaryData?.[0]?.["Current Value"]}
+          totalInvestment={silverSummaryData?.[0]?.["Total Investment"]}
+          date={silverSummaryData?.[0]?.["Date"]}
+        />
+      )}
 
     </div>
   )
