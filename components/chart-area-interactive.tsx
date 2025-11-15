@@ -67,7 +67,7 @@ export function ChartAreaInteractive() {
             config={chartConfig}
             className="aspect-auto h-[250px] w-full"
           >
-            <AreaChart data={totalPortfolioSummary || []}>
+            <AreaChart data={totalPortfolioSummary}>
               <defs>
                 <linearGradient id="fillTotalInvestment" x1="0" y1="0" x2="0" y2="1">
                   <stop
