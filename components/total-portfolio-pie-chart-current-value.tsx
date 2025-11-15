@@ -55,38 +55,41 @@ export function TotalPortfolioPieChartCurrentValue() {
   React.useEffect(() => {
     const fetchTotalPortfolioSummary = async () => {
 
-      const { data: stocksSummaryData, error: stocksSummaryError } = await supabase
-        .from("Daily Stocks - Holdings Summary")
-        .select("*")
-        .order("Date", { ascending: false })
-        .limit(1);
-
-      const { data: mutualFundsSummaryData, error: mutualFundsSummaryError } = await supabase
-        .from("Daily Mutual Funds - Holdings Summary")
-        .select("*")
-        .order("Date", { ascending: false })
-        .limit(1);
-
-      const { data: ppfSummaryData, error: ppfSummaryError } = await supabase
-        .from("Daily PPF Statement Summary")
-        .select("*")
-        .order("Date", { ascending: false })
-        .limit(1);
-
-      const { data: goldSummaryData, error: goldSummaryError } = await supabase
-        .from("Daily Precious Metals - Holdings Summary")
-        .select("*")
-        .eq("Metal", "Gold")
-        .order("Date", { ascending: false })
-        .limit(1);
-
-      const { data: silverSummaryData, error: silverSummaryError } = await supabase
-        .from("Daily Precious Metals - Holdings Summary")
-        .select("*")
-        .eq("Metal", "Silver")
-        .order("Date", { ascending: false })
-        .limit(1);
-
+      const [
+        { data: stocksSummaryData, error: stocksSummaryError },
+        { data: mutualFundsSummaryData, error: mutualFundsSummaryError },
+        { data: ppfSummaryData, error: ppfSummaryError },
+        { data: goldSummaryData, error: goldSummaryError },
+        { data: silverSummaryData, error: silverSummaryError }
+      ] = await Promise.all([
+        supabase
+          .from("Daily Stocks - Holdings Summary")
+          .select("*")
+          .order("Date", { ascending: false })
+          .limit(1),
+        supabase
+          .from("Daily Mutual Funds - Holdings Summary")
+          .select("*")
+          .order("Date", { ascending: false })
+          .limit(1),
+        supabase
+          .from("Daily PPF Statement Summary")
+          .select("*")
+          .order("Date", { ascending: false })
+          .limit(1),
+        supabase
+          .from("Daily Precious Metals - Holdings Summary")
+          .select("*")
+          .eq("Metal", "Gold")
+          .order("Date", { ascending: false })
+          .limit(1),
+        supabase
+          .from("Daily Precious Metals - Holdings Summary")
+          .select("*")
+          .eq("Metal", "Silver")
+          .order("Date", { ascending: false })
+          .limit(1),
+      ]);
       const chartData = [
         {
           instrument: "Stocks",
