@@ -46,7 +46,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function TotalPortfolioPieChart() {
+export function TotalPortfolioPieChartTotalInvestment() {
 
   const supabase = createClient();
 
@@ -126,8 +126,8 @@ export function TotalPortfolioPieChart() {
     fetchTotalPortfolioSummary();
   }, [supabase]);
 
-  const totalCurrentValue: number = React.useMemo(() => {
-    return totalPortfolioSummary?.reduce((acc, curr) => acc + curr["Current Value"], 0) || 0;
+  const totalInvestment: number = React.useMemo(() => {
+    return totalPortfolioSummary?.reduce((acc, curr) => acc + curr["Total Investment"], 0) || 0;
   }, [totalPortfolioSummary]);
 
   return (
@@ -135,7 +135,7 @@ export function TotalPortfolioPieChart() {
       <CardHeader>
         <CardTitle>Total Portfolio</CardTitle>
         <CardDescription>
-          Portfolio Allocation (Current Value)
+          Portfolio Allocation (Total Investment)
         </CardDescription>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
@@ -147,11 +147,11 @@ export function TotalPortfolioPieChart() {
             <PieChart>
               <ChartTooltip
                 cursor={false}
-                content={(props) => <CustomTooltip {...props} totalValue={totalCurrentValue} />}
+                content={(props) => <CustomTooltip {...props} totalValue={totalInvestment} />}
               />
               <Pie
                 data={totalPortfolioSummary}
-                dataKey="Current Value"
+                dataKey="Total Investment"
                 nameKey="instrument"
                 startAngle={90}
                 endAngle={-270}

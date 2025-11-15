@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { TotalPortfolioAreaChart } from "@/components/total-portfolio-area-chart"
-import { TotalPortfolioPieChart } from "@/components/total-portfolio-pie-chart"
+import { TotalPortfolioPieChartCurrentValue } from "@/components/total-portfolio-pie-chart-current-value"
+import { TotalPortfolioPieChartTotalInvestment } from "@/components/total-portfolio-pie-chart-total-investment";
 import { DataTable } from "@/components/data-table"
 import { PortfolioSectionCards } from "@/components/portfolio-section-cards"
 import { SiteHeader } from "@/components/site-header"
@@ -43,8 +44,8 @@ export default async function Page() {
                 <TotalPortfolioAreaChart />
               </div>
               <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-2">
-                <TotalPortfolioPieChart />
-                <TotalPortfolioPieChart />
+                <TotalPortfolioPieChartCurrentValue />
+                <TotalPortfolioPieChartTotalInvestment />
               </div>
               <DataTable data={tableData} />
             </div>
