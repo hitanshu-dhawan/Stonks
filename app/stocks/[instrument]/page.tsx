@@ -4,24 +4,36 @@ import { redirect } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
-import { PortfolioSectionCards } from "@/components/portfolio-section-cards"
-import { TotalPortfolioAreaChart } from "@/components/total-portfolio-area-chart"
-import { TotalPortfolioPieChartCurrentValue } from "@/components/total-portfolio-pie-chart-current-value"
-import { TotalPortfolioPieChartTotalInvestment } from "@/components/total-portfolio-pie-chart-total-investment";
-import { DataTable } from "@/components/data-table"
+import { StockInstrumentPriceAreaChart } from "@/components/stock-instrument-price-area-chart"
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
 
-import tableData from "./data.json"
+export default async function Page({
+  params
+}: {
+  params: Promise<{ instrument: string }>
+}) {
+  const { instrument } = await params;
 
-export default async function Page() {
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.claims) {
     redirect("/auth/login");
+  }
+
+  const { data: stocksNamesData, error: stocksNamesError } = await supabase
+    .from("Stocks - Names")
+    .select("*")
+    .eq("Instrument", instrument)
+    .limit(1);
+
+  const stockName = stocksNamesData && stocksNamesData.length > 0 ? stocksNamesData[0].Name : null;
+
+  if (!stockName) {
+    redirect("/stocks");
   }
 
   return (
@@ -35,19 +47,13 @@ export default async function Page() {
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader title="Dashboard" />
+        <SiteHeader title={`Stock : ${stockName}`} />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <PortfolioSectionCards />
               <div className="px-4 lg:px-6">
-                <TotalPortfolioAreaChart />
+                <StockInstrumentPriceAreaChart instrument={instrument} instrumentName={stockName} />
               </div>
-              <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-2">
-                <TotalPortfolioPieChartCurrentValue />
-                <TotalPortfolioPieChartTotalInvestment />
-              </div>
-              {/* <DataTable data={tableData} /> */}
             </div>
           </div>
         </div>

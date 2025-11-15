@@ -32,42 +32,40 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartAreaInteractive() {
+export function MutualFundsPortfolioAreaChart() {
 
   const supabase = createClient();
 
-  const [totalPortfolioSummary, setTotalPortfolioSummary] = React.useState<any[] | null>(null);
+  const [mutualFundsPortfolioSummary, setMutualFundsPortfolioSummary] = React.useState<any[] | null>(null);
 
   React.useEffect(() => {
-    const fetchTotalPortfolioSummary = async () => {
+    const fetchMutualFundsPortfolioSummary = async () => {
       const { data } = await supabase
-        .from("Daily Total Portfolio Summary")
+        .from("Daily Mutual Funds - Holdings Summary")
         .select("*")
         .order("Date", { ascending: true });
 
-      const filteredData = data?.filter((item) => item.Date >= "2025-11-01") || null;
-
-      setTotalPortfolioSummary(filteredData);
+      setMutualFundsPortfolioSummary(data);
     };
 
-    fetchTotalPortfolioSummary();
+    fetchMutualFundsPortfolioSummary();
   }, [supabase]);
 
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Total Portfolio</CardTitle>
+        <CardTitle>Mutual Funds Portfolio</CardTitle>
         <CardDescription>
-          Historical Portfolio Performance
+          Historical Mutual Funds Performance
         </CardDescription>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        {totalPortfolioSummary ? (
+        {mutualFundsPortfolioSummary ? (
           <ChartContainer
             config={chartConfig}
             className="aspect-auto h-[250px] w-full"
           >
-            <AreaChart data={totalPortfolioSummary}>
+            <AreaChart data={mutualFundsPortfolioSummary}>
               <defs>
                 <linearGradient id="fillTotalInvestment" x1="0" y1="0" x2="0" y2="1">
                   <stop
