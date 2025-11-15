@@ -1,7 +1,7 @@
 "use client"
 
 // React hooks for state and lifecycle management
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 import { createClient } from "@/lib/supabase/client";
 import { JwtPayload } from "@supabase/supabase-js";
