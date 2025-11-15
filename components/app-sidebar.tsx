@@ -22,12 +22,16 @@ import {
   IconSearch,
   IconSettings,
   IconUsers,
+  IconTrendingUp,
+  IconChartPie,
+  IconCoins,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
+import { NavInstruments } from "@/components/nav-instruments"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+
 import {
   Sidebar,
   SidebarContent,
@@ -38,6 +42,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
+
 const data = {
   navMain: [
     {
@@ -46,60 +51,38 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
+      title: "Stocks",
+      url: "/stocks",
+      icon: IconTrendingUp,
     },
     {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
+      title: "Mutual Funds",
+      url: "/mutual-funds",
+      icon: IconChartPie,
     },
     {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
+      title: "Gold & Silver",
+      url: "/precious-metals",
+      icon: IconCoins,
     },
   ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
+  // navSecondary: [
+  //   {
+  //     title: "Settings",
+  //     url: "#",
+  //     icon: IconSettings,
+  //   },
+  //   {
+  //     title: "Get Help",
+  //     url: "#",
+  //     icon: IconHelp,
+  //   },
+  //   {
+  //     title: "Search",
+  //     url: "#",
+  //     icon: IconSearch,
+  //   },
+  // ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -107,6 +90,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const supabase = createClient();
 
   const [user, setUser] = useState<JwtPayload | undefined>(undefined);
+  const [stocksHoldings, setStocksHoldings] = useState<any[] | null>(null);
+  const [mutualFundsHoldings, setMutualFundsHoldings] = useState<any[] | null>(null);
 
   // Fetch user on component mount
   useEffect(() => {
@@ -117,6 +102,34 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     };
 
     fetchUser();
+  }, [supabase]);
+
+  // Fetch stocks holdings on component mount
+  useEffect(() => {
+    const fetchStocksHoldings = async () => {
+      const { data } = await supabase
+        .from("Stocks - Holdings")
+        .select("*")
+        .order("Instrument", { ascending: true });
+
+      setStocksHoldings(data);
+    };
+
+    fetchStocksHoldings();
+  }, [supabase]);
+
+  // Fetch mutual funds holdings on component mount
+  useEffect(() => {
+    const fetchMutualFundsHoldings = async () => {
+      const { data } = await supabase
+        .from("Mutual Funds - Holdings")
+        .select("*")
+        .order("Name", { ascending: true });
+
+      setMutualFundsHoldings(data);
+    };
+
+    fetchMutualFundsHoldings();
   }, [supabase]);
 
   return (
@@ -138,7 +151,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        {stocksHoldings && (
+          <NavInstruments
+            title="Stocks"
+            items={stocksHoldings.map((holding) => ({
+              name: holding.Instrument,
+              url: `/stocks/${holding.Instrument}`,
+              icon: IconTrendingUp,
+            }))}
+          />
+        )}
+        {mutualFundsHoldings && (
+          <NavInstruments
+            title="Mutual Funds"
+            items={mutualFundsHoldings.map((holding) => ({
+              name: holding.Name,
+              url: `/mutual-funds`,
+              icon: IconChartPie,
+            }))}
+          />
+        )}
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>

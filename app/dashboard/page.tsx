@@ -47,7 +47,7 @@ export default async function Page() {
                 <TotalPortfolioPieChartCurrentValue />
                 <TotalPortfolioPieChartTotalInvestment />
               </div>
-              <DataTable data={tableData} />
+              {/* <DataTable data={tableData} /> */}
             </div>
           </div>
         </div>
