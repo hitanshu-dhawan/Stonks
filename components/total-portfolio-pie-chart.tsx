@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { createClient } from "@/lib/supabase/client"
 
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { Pie, PieChart } from "recharts"
 
 import {
   Card,
@@ -16,19 +16,33 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
 
 const chartConfig = {
-  "Total Investment": {
-    label: "Total Investment",
-    color: "var(--primary)",
+  "Stocks": {
+    label: "Stocks",
+    color: "var(--chart-1)",
   },
-  "Current Value": {
-    label: "Current Value",
-    color: "var(--primary)",
+  "Mutual Funds": {
+    label: "Mutual Funds",
+    color: "var(--chart-2)",
+  },
+  "PPF": {
+    label: "PPF",
+    color: "var(--chart-3)",
+  },
+  "Gold": {
+    label: "Gold",
+    color: "var(--chart-4)",
+  },
+  "Silver": {
+    label: "Silver",
+    color: "var(--chart-5)",
   },
 } satisfies ChartConfig
 
@@ -40,14 +54,73 @@ export function TotalPortfolioPieChart() {
 
   React.useEffect(() => {
     const fetchTotalPortfolioSummary = async () => {
-      const { data } = await supabase
-        .from("Daily Total Portfolio Summary")
+
+      const { data: stocksSummaryData, error: stocksSummaryError } = await supabase
+        .from("Daily Stocks - Holdings Summary")
         .select("*")
-        .order("Date", { ascending: true });
+        .order("Date", { ascending: false })
+        .limit(1);
 
-      const filteredData = data?.filter((item) => item.Date >= "2025-11-01") || null;
+      const { data: mutualFundsSummaryData, error: mutualFundsSummaryError } = await supabase
+        .from("Daily Mutual Funds - Holdings Summary")
+        .select("*")
+        .order("Date", { ascending: false })
+        .limit(1);
 
-      setTotalPortfolioSummary(filteredData);
+      const { data: ppfSummaryData, error: ppfSummaryError } = await supabase
+        .from("Daily PPF Statement Summary")
+        .select("*")
+        .order("Date", { ascending: false })
+        .limit(1);
+
+      const { data: goldSummaryData, error: goldSummaryError } = await supabase
+        .from("Daily Precious Metals - Holdings Summary")
+        .select("*")
+        .eq("Metal", "Gold")
+        .order("Date", { ascending: false })
+        .limit(1);
+
+      const { data: silverSummaryData, error: silverSummaryError } = await supabase
+        .from("Daily Precious Metals - Holdings Summary")
+        .select("*")
+        .eq("Metal", "Silver")
+        .order("Date", { ascending: false })
+        .limit(1);
+
+      const chartData = [
+        {
+          instrument: "Stocks",
+          "Current Value": stocksSummaryData?.[0]?.["Current Value"] || 0,
+          "Total Investment": stocksSummaryData?.[0]?.["Total Investment"] || 0,
+          fill: "var(--chart-1)"
+        },
+        {
+          instrument: "Mutual Funds",
+          "Current Value": mutualFundsSummaryData?.[0]?.["Current Value"] || 0,
+          "Total Investment": mutualFundsSummaryData?.[0]?.["Total Investment"] || 0,
+          fill: "var(--chart-2)"
+        },
+        {
+          instrument: "PPF",
+          "Current Value": ppfSummaryData?.[0]?.["Current Value"] || 0,
+          "Total Investment": ppfSummaryData?.[0]?.["Total Investment"] || 0,
+          fill: "var(--chart-3)"
+        },
+        {
+          instrument: "Gold",
+          "Current Value": goldSummaryData?.[0]?.["Current Value"] || 0,
+          "Total Investment": goldSummaryData?.[0]?.["Total Investment"] || 0,
+          fill: "var(--chart-4)"
+        },
+        {
+          instrument: "Silver",
+          "Current Value": silverSummaryData?.[0]?.["Current Value"] || 0,
+          "Total Investment": silverSummaryData?.[0]?.["Total Investment"] || 0,
+          fill: "var(--chart-5)"
+        },
+      ]
+
+      setTotalPortfolioSummary(chartData);
     };
 
     fetchTotalPortfolioSummary();
@@ -58,97 +131,31 @@ export function TotalPortfolioPieChart() {
       <CardHeader>
         <CardTitle>Total Portfolio</CardTitle>
         <CardDescription>
-          Portfolio Allocation
+          Portfolio Allocation (Current Value)
         </CardDescription>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         {totalPortfolioSummary ? (
           <ChartContainer
             config={chartConfig}
-            className="aspect-auto h-[250px] w-full"
+            className="mx-auto h-[250px]"
           >
-            <AreaChart data={totalPortfolioSummary}>
-              <defs>
-                <linearGradient id="fillTotalInvestment" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="5%"
-                    stopColor="var(--chart-1)"
-                    stopOpacity={1.0}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--chart-1)"
-                    stopOpacity={0.1}
-                  />
-                </linearGradient>
-                <linearGradient id="fillCurrentValue" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="5%"
-                    stopColor="var(--chart-2)"
-                    stopOpacity={0.8}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--chart-2)"
-                    stopOpacity={0.1}
-                  />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="Date"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                minTickGap={32}
-                tickFormatter={(value) => {
-                  const date = new Date(value)
-                  return date.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })
-                }}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                tickFormatter={(value) => {
-                  if (value === 0) return '';
-                  const lakhs = value / 100000;
-                  return `₹${lakhs.toFixed(0)}L`;
-                }}
-              />
+            <PieChart>
               <ChartTooltip
                 cursor={false}
                 content={
-                  <ChartTooltipContent
-                    labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })
-                    }}
-                    indicator="dot"
-                  />
+                  <ChartTooltipContent hideLabel />
                 }
               />
-              <Area
-                dataKey="Current Value"
-                type="natural"
-                fill="url(#fillCurrentValue)"
-                stroke="var(--chart-2)"
+              <Pie data={totalPortfolioSummary} dataKey="Current Value" nameKey="instrument" />
+              <ChartLegend
+                content={<ChartLegendContent nameKey="instrument" />}
+                className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
               />
-              <Area
-                dataKey="Total Investment"
-                type="natural"
-                fill="url(#fillTotalInvestment)"
-                stroke="var(--chart-1)"
-              />
-            </AreaChart>
+            </PieChart>
           </ChartContainer>
         ) : (
-          <div className="aspect-auto h-[250px] w-full" />
+          <div className="mx-auto h-[250px]" />
         )}
       </CardContent>
     </Card>
