@@ -90,6 +90,7 @@ export function TotalPortfolioPieChartCurrentValue() {
           .order("Date", { ascending: false })
           .limit(1),
       ]);
+
       const chartData = [
         {
           instrument: "Stocks",
