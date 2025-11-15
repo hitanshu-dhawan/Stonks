@@ -22,64 +22,49 @@ import {
 
 
 const chartConfig = {
-  "Total Investment": {
-    label: "Total Investment",
-    color: "var(--primary)",
-  },
-  "Current Value": {
-    label: "Current Value",
+  "Price": {
+    label: "Price",
     color: "var(--primary)",
   },
 } satisfies ChartConfig
 
-export function MutualFundsPortfolioAreaChart() {
+export function SilverPriceAreaChart() {
 
   const supabase = createClient();
 
-  const [mutualFundsPortfolioSummary, setMutualFundsPortfolioSummary] = React.useState<any[] | null>(null);
+  const [silverPriceHistory, setSilverPriceHistory] = React.useState<any[] | null>(null);
 
   React.useEffect(() => {
-    const fetchMutualFundsPortfolioSummary = async () => {
+    const fetchSilverPriceHistory = async () => {
       const { data } = await supabase
-        .from("Daily Mutual Funds - Holdings Summary")
+        .from("Precious Metals Prices (History)")
         .select("*")
-        .order("Date", { ascending: true });
+        .eq("Metal", "Silver")
+        .order("created_at", { ascending: true });
 
-      setMutualFundsPortfolioSummary(data);
+      setSilverPriceHistory(data);
     };
 
-    fetchMutualFundsPortfolioSummary();
+    fetchSilverPriceHistory();
   }, [supabase]);
 
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Mutual Funds Portfolio</CardTitle>
+        <CardTitle>Silver Price</CardTitle>
         <CardDescription>
-          Historical Mutual Funds Performance
+          Historical Silver Price
         </CardDescription>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        {mutualFundsPortfolioSummary ? (
+        {silverPriceHistory ? (
           <ChartContainer
             config={chartConfig}
             className="aspect-auto h-[250px] w-full"
           >
-            <AreaChart data={mutualFundsPortfolioSummary}>
+            <AreaChart data={silverPriceHistory}>
               <defs>
-                <linearGradient id="fillTotalInvestment" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="5%"
-                    stopColor="var(--chart-1)"
-                    stopOpacity={1.0}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--chart-1)"
-                    stopOpacity={0.1}
-                  />
-                </linearGradient>
-                <linearGradient id="fillCurrentValue" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="fillPrice" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
                     stopColor="var(--chart-2)"
@@ -94,7 +79,7 @@ export function MutualFundsPortfolioAreaChart() {
               </defs>
               <CartesianGrid vertical={false} />
               <XAxis
-                dataKey="Date"
+                dataKey="created_at"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
@@ -113,8 +98,12 @@ export function MutualFundsPortfolioAreaChart() {
                 tickMargin={8}
                 tickFormatter={(value) => {
                   if (value === 0) return '';
-                  const lakhs = value / 100000;
-                  return `₹${lakhs.toFixed(0)}L`;
+
+                  return new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: 'INR',
+                    maximumFractionDigits: 0
+                  }).format(value);
                 }}
               />
               <ChartTooltip
@@ -132,16 +121,10 @@ export function MutualFundsPortfolioAreaChart() {
                 }
               />
               <Area
-                dataKey="Current Value"
+                dataKey="Price"
                 type="natural"
-                fill="url(#fillCurrentValue)"
+                fill="url(#fillPrice)"
                 stroke="var(--chart-2)"
-              />
-              <Area
-                dataKey="Total Investment"
-                type="natural"
-                fill="url(#fillTotalInvestment)"
-                stroke="var(--chart-1)"
               />
             </AreaChart>
           </ChartContainer>

@@ -45,9 +45,7 @@ export function StocksPortfolioAreaChart() {
         .select("*")
         .order("Date", { ascending: true });
 
-      const filteredData = data?.filter((item) => item.Date >= "2025-11-01") || null;
-
-      setStocksPortfolioSummary(filteredData);
+      setStocksPortfolioSummary(data);
     };
 
     fetchStocksPortfolioSummary();
