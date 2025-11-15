@@ -1,8 +1,19 @@
+import { createClient } from "@/lib/supabase/server";
+
+import { redirect } from "next/navigation";
+
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+
+  const { data } = await supabase.auth.getClaims();
+  if (data?.claims) {
+    redirect("/dashboard");
+  }
+
   return (
     <main className="min-h-screen flex flex-col items-center">
       <div className="flex-1 w-full flex flex-col gap-20 items-center">
