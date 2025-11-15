@@ -51,7 +51,7 @@ export function ChartAreaInteractive() {
     };
 
     fetchTotalPortfolioSummary();
-  }, []);
+  }, [supabase]);
 
   return (
     <Card className="@container/card">
