@@ -126,6 +126,10 @@ export function TotalPortfolioPieChart() {
     fetchTotalPortfolioSummary();
   }, [supabase]);
 
+  const totalCurrentValue: number = React.useMemo(() => {
+    return totalPortfolioSummary?.reduce((acc, curr) => acc + curr["Current Value"], 0) || 0;
+  }, [totalPortfolioSummary]);
+
   return (
     <Card className="@container/card">
       <CardHeader>
@@ -143,9 +147,7 @@ export function TotalPortfolioPieChart() {
             <PieChart>
               <ChartTooltip
                 cursor={false}
-                content={
-                  <ChartTooltipContent hideLabel />
-                }
+                content={(props) => <CustomTooltip {...props} totalValue={totalCurrentValue} />}
               />
               <Pie data={totalPortfolioSummary} dataKey="Current Value" nameKey="instrument" />
               <ChartLegend
@@ -160,4 +162,31 @@ export function TotalPortfolioPieChart() {
       </CardContent>
     </Card>
   )
+}
+
+function CustomTooltip({ active, payload, totalValue }: { active?: boolean; payload?: any[]; totalValue: number }) {
+  if (!active || !payload || !payload.length) return null;
+
+  const data = payload[0];
+  const name = data.name;
+  const value = data.value as number;
+  const percentage = ((value / totalValue) * 100).toFixed(1);
+
+  return (
+    <div className="rounded-lg border bg-background p-2 shadow-md">
+      <div className="flex flex-col">
+        <p className="text-sm font-normal text-foreground">
+          {name}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          {new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            maximumFractionDigits: 0
+          }).format(value)}
+          <span className="ml-1 text-xs">({percentage}%)</span>
+        </p>
+      </div>
+    </div>
+  );
 }
