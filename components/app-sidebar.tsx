@@ -25,6 +25,7 @@ import {
   IconTrendingUp,
   IconChartPie,
   IconCoins,
+  IconPigMoney,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -59,6 +60,11 @@ const data = {
       title: "Mutual Funds",
       url: "/mutual-funds",
       icon: IconChartPie,
+    },
+    {
+      title: "Public Provident Fund",
+      url: "/public-provident-fund",
+      icon: IconPigMoney,
     },
     {
       title: "Gold & Silver",
