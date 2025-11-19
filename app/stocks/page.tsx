@@ -6,10 +6,13 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { StocksSectionCards } from "@/components/stocks-section-cards";
 import { StocksPortfolioAreaChart } from "@/components/stocks-portfolio-area-chart"
+import { DataTable } from "@/components/data-table"
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+
+import tableData from "../dashboard/data.json"
 
 export default async function Page() {
   const supabase = await createClient();
@@ -38,6 +41,7 @@ export default async function Page() {
               <div className="px-4 lg:px-6">
                 <StocksPortfolioAreaChart />
               </div>
+              <DataTable data={tableData} />
             </div>
           </div>
         </div>
